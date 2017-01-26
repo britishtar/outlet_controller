@@ -1,11 +1,9 @@
-# echo
-For controlling local devices with the Amazon Echo.
-
-Instructions for installation and usage [available on Instructables here](http://www.instructables.com/id/Hacking-the-Amazon-Echo/)
-
-Brought to you by [FabricateIO](http://fabricate.io)
+# outlet_controller
+Fork of toddmedema's "echo" repo for controlling local devices with the Amaxon Echo.  Includes calls to timleland's "codesend" for controlling RF switches.
 
 ## Quick Start
+
+** UNDER CONSTRUCTION **
 
 1. Create a [Python Virtual Environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
 2. git clone *this_repo*

@@ -15,6 +15,7 @@
 import fauxmo
 import logging
 import time
+import subprocess
 
 from debounce_handler import debounce_handler
 
@@ -24,12 +25,19 @@ class device_handler(debounce_handler):
     """Publishes the on/off state requested,
        and the IP address of the Echo making the request.
     """
-    TRIGGERS = {"device": 52000}
+    TRIGGERS = {"lamps": 52000}
 
     def act(self, client_address, state, name):
         print "State", state, "on ", name, "from client @", client_address
         return True
-
+        if state:
+            subprocess.call(['/var/www/rfoutlet/codesend','1054003','-l','181','-p','0'])
+            subprocess.call(['/var/www/rfoutlet/codesend','1054147','-l','181','-p','0'])
+            subprocess.call(['/var/www/rfoutlet/codesend','1054467','-l','181','-p','0'])
+        if not state:
+            subprocess.call(['/var/www/rfoutlet/codesend','1054012','-l','181','-p','0'])
+            subprocess.call(['/var/www/rfoutlet/codesend','1054156','-l','181','-p','0'])
+            subprocess.call(['/var/www/rfoutlet/codesend','1054476','-l','181','-p','0'])
 if __name__ == "__main__":
     # Startup the fauxmo server
     fauxmo.DEBUG = True

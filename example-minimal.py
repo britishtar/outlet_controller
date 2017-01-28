@@ -25,19 +25,56 @@ class device_handler(debounce_handler):
     """Publishes the on/off state requested,
        and the IP address of the Echo making the request.
     """
-    TRIGGERS = {"lamps": 52000}
+    TRIGGERS = {"lamps": 52000, "reading lamp": 52001, "bicycle lamp": 52003, "corner lamp": 52004}
 
     def act(self, client_address, state, name):
         print "State", state, "on ", name, "from client @", client_address
+
+        # actions to take if "lamps" device is called
+        if name == "lamps":
+            # if "lamps" is turned ON
+	    if state:
+                subprocess.call(['/var/www/rfoutlet/codesend','1054003','-l','181','-p','0']) # ON signal for outlet #1
+                subprocess.call(['/var/www/rfoutlet/codesend','1054147','-l','181','-p','0']) # ON signal for outlet #2
+                subprocess.call(['/var/www/rfoutlet/codesend','1054467','-l','181','-p','0']) # ON signal for outlet #3
+                # if "lampls" is turned OFF
+	    if not state:
+                subprocess.call(['/var/www/rfoutlet/codesend','1054012','-l','181','-p','0']) # OFF signal for outlet #1
+                subprocess.call(['/var/www/rfoutlet/codesend','1054156','-l','181','-p','0']) # OFF signal for outlet #2
+                subprocess.call(['/var/www/rfoutlet/codesend','1054476','-l','181','-p','0']) # OFF signal for outlet #3
+
+        # what to do if "reading lamp" is called
+        if name == "reading lamp":
+            # ON
+            if state:
+                subprocess.call(['/var/www/rfoutlet/codesend','1054003','-l','181','-p','0'])
+            # OFF
+            if not state:
+                subprocess.call(['/var/www/rfoutlet/codesend','1054012','-l','181','-p','0'])
+
+        # what to do if "bicycle lamp" is called
+        if name == "bicycle lamp":
+            # ON
+            if state:
+                subprocess.call(['/var/www/rfoutlet/codesend','1054147','-l','181','-p','0'])
+            # OFF
+            if not state:
+                subprocess.call(['/var/www/rfoutlet/codesend','1054156','-l','181','-p','0'])
+
+        # what to do if "corner lamp" is called
+        if name == "corner lamp":
+            # ON
+            if state:
+                subprocess.call(['/var/www/rfoutlet/codesend','1054467','-l','181','-p','0'])
+            # OFF
+            if not state:
+                subprocess.call(['/var/www/rfoutlet/codesend','1054476','-l','181','-p','0']) 
+
         return True
-        if state:
-            subprocess.call(['/var/www/rfoutlet/codesend','1054003','-l','181','-p','0'])
-            subprocess.call(['/var/www/rfoutlet/codesend','1054147','-l','181','-p','0'])
-            subprocess.call(['/var/www/rfoutlet/codesend','1054467','-l','181','-p','0'])
-        if not state:
-            subprocess.call(['/var/www/rfoutlet/codesend','1054012','-l','181','-p','0'])
-            subprocess.call(['/var/www/rfoutlet/codesend','1054156','-l','181','-p','0'])
-            subprocess.call(['/var/www/rfoutlet/codesend','1054476','-l','181','-p','0'])
+
+#TODO: create method "send_rf_to_outlet" that is more robust (error catching, etc...)
+#    def send_rf_to_outlet(self, outlet_number, desired_state)
+
 if __name__ == "__main__":
     # Startup the fauxmo server
     fauxmo.DEBUG = True
